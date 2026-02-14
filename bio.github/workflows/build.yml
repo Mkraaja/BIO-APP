@@ -1,0 +1,24 @@
+name: Build APK
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get Date
+        id: get-date
+        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+      - name: Build with Buildozer
+        uses: ArtemSerebrenninkov/buildozer-action@v1
+        with:
+          buildozer_version: master
+          python_version: 3.11
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: biosecurity-apk-${{ steps.get-date.outputs.date }}
+          path: bin/*.apk
